@@ -1,10 +1,12 @@
 import { useState } from "react";
-
+import AddToDo from "./components/AddToDo";
 import ToDoList from "./components/ToDoList";
 import Header from "./components/Header"
 
 const App = () => {
-  const [todoitems, setTodo] = useState ([
+  const [showAddToDo, setShowAddToDo] = useState(true)
+
+  const [todolists, setTodo] = useState ([
         {
             id: 1,
             title: "Do the homeworks.",
@@ -27,10 +29,41 @@ const App = () => {
             reminder: true,
         },
     ])
+
+    // const [colors, setColor] = useState({ color: ['#fee9b9', '#f98a93','#93f98a' ]})
+
+    // Add Todo
+    const addToDo = (todoitem) => {
+      const id = Math.floor(Math.random() * 10000) + 1
+      const newToDo = {id, ...todoitem}
+      setTodo([...todolists, newToDo])
+    }
+    // Delete Todo
+    const deleteTodo = (id) => {
+      setTodo(todolists.filter((todoitem) => todoitem.id !== id))
+    }
+
+    // Toggle Reminder
+    const toggleReminder = (id) => {
+      setTodo(todolists.map((todoitem) =>
+        todoitem.id === id ? { ...todoitem, reminder: !todoitem.reminder} : todoitem
+        ))
+    }
+    // Toggle Status
+    const toggleStatus = (id) => {
+      // setColor(todolists.map((todoitem) =>
+      //   todoitem.id === id ? { ...todoitem, itemStatus: !todoitem.reminder} : todoitem
+      //   ))
+      console.log('test')
+    }
+
   return (
     <div className="container">
-      <Header title = 'Todo Tasks' />
-      <ToDoList todoitems={todoitems}/>
+      <Header onAdd={() => setShowAddToDo(!showAddToDo)} showAdd={showAddToDo} title = 'Todo Tasks' />
+
+     {showAddToDo && <AddToDo onAdd={addToDo} />}
+
+      {todolists.length > 0 ? <ToDoList todolists={todolists} onDelete={deleteTodo}  onToggle = {toggleReminder} onPress={toggleStatus}/> : "ToDo list is Empty  "}
     </div>
   )
 }
